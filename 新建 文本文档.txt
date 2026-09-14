@@ -1,0 +1,14 @@
+如果你是 PowerShell（蓝底窗口/标题写着 Windows PowerShell）
+PowerShell
+ 
+cd D:\浣熊先抢-1.0\浣熊先抢
+python app.py
+
+
+
+
+如果你是 CMD（黑底窗口）
+
+
+cd /d D:\浣熊先抢-1.0\浣熊先抢
+python app.py

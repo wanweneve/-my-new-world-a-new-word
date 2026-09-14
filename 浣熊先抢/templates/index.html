@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浣熊先抢 · 控制台</title>
+<style>
+:root{
+  --bg:#0f1115;--card:#171a21;--card2:#1d212b;--line:#2a2f3c;
+  --text:#e8eaf0;--muted:#8b91a3;--accent:#4f8cff;--ok:#2ecc71;--warn:#f5a623;--err:#ff5d5d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI","Microsoft YaHei",sans-serif;min-height:100vh;padding:24px}
+.wrap{max-width:1080px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+h1{font-size:22px;font-weight:700}
+h1 span{color:var(--accent)}
+.pill{padding:5px 14px;border-radius:999px;font-size:13px;background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+.pill.watch{color:#7db4ff;border-color:#2d4a7a}
+.pill.grab{color:#ffd479;border-color:#7a5d2d;animation:pulse 1s infinite}
+.pill.ok{color:var(--ok);border-color:#2d7a4a}
+.pill.err{color:var(--err);border-color:#7a2d2d}
+@keyframes pulse{50%{opacity:.55}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.card h2{font-size:15px;margin-bottom:14px;color:var(--text)}
+.card h2 small{color:var(--muted);font-weight:400;margin-left:8px;font-size:12px}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,select,textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:8px;
+  color:var(--text);padding:9px 11px;font-size:13px;outline:none;font-family:inherit}
+input:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:64px;font-family:Consolas,monospace;font-size:12px;word-break:break-all}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:9px;
+  padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;color:#fff;background:var(--accent);transition:.15s}
+.btn:hover{filter:brightness(1.12)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.green{background:var(--ok)}
+.btn.red{background:var(--err)}
+.btn.gray{background:var(--card2);border:1px solid var(--line);color:var(--text)}
+.btn.sm{padding:6px 12px;font-size:12px;border-radius:7px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--muted);text-align:left;font-weight:500;padding:7px 8px;border-bottom:1px solid var(--line);font-size:12px}
+td{padding:8px;border-bottom:1px solid #20242f}
+tr:hover td{background:#1a1e28}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+.badge.ok{color:#7df0ae;border-color:#2d7a4a;background:#12291b}
+.badge.wash{color:#7db4ff;border-color:#2d4a7a}
+.badge.rinse{color:#7de0e8;border-color:#2d6a7a}
+.badge.maint{color:#9aa0b0}
+.badge.cat{color:#c9a7ff;border-color:#5d3d8a}
+.empty{color:var(--muted);text-align:center;padding:26px 0;font-size:13px}
+.banner{display:none;border-radius:12px;padding:16px 18px;margin-bottom:16px;font-size:15px;font-weight:600}
+.banner.ok{display:block;background:#12291b;border:1px solid #2d7a4a;color:#7df0ae}
+.banner.err{display:block;background:#2b1414;border:1px solid #7a2d2d;color:#ff9c9c}
+.banner small{display:block;font-weight:400;color:var(--muted);margin-top:6px;font-size:12px}
+.stats{display:flex;gap:22px;margin-bottom:12px;flex-wrap:wrap}
+.stat b{font-size:20px;display:block}
+.stat span{font-size:12px;color:var(--muted)}
+#log{background:#0c0e12;border:1px solid var(--line);border-radius:10px;padding:12px;height:220px;
+  overflow-y:auto;font-family:Consolas,monospace;font-size:12px;line-height:1.75;color:#a8b0c2}
+.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--card2);
+  border:1px solid var(--line);padding:10px 20px;border-radius:10px;font-size:13px;display:none;z-index:9}
+.tog{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+.tog input{width:auto}
+.flex{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.catrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:var(--card2);
+  border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.catrow input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🦝 浣熊先抢 <span>· 控制台</span></h1>
+    <div class="pill" id="statePill">空闲</div>
+  </header>
+
+  <div class="banner ok" id="okBanner"></div>
+  <div class="banner err" id="errBanner"></div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>⚙️ 配置 <small>改完记得点保存</small></h2>
+      <label>API 地址(抓包看请求 Host,校区不同可能是别的子域名)</label>
+      <input id="api_host" placeholder="https://hxxs.mrrac.com">
+      <label>token(抓包请求头里的 token,原样粘贴,不要解码)</label>
+      <textarea id="token" placeholder="把抓包得到的 token 原样粘贴到这里(一长串,通常以百分号编码出现,不要解码)"></textarea>
+      <div class="row">
+        <div>
+          <label>洗衣桶编号</label>
+          <input id="bucket_number" placeholder="0003328992">
+        </div>
+        <div>
+          <label>channel 渠道号</label>
+          <input id="channel" type="number" placeholder="3">
+        </div>
+        <div>
+          <label>洗衣模式</label>
+          <input id="wash_type_code" placeholder="QUICK_WASH" list="wtc">
+          <datalist id="wtc"><option value="QUICK_WASH"></datalist>
+        </div>
+      </div>
+      <label>机器类型(可多选,同时盯多种,任意一台释放即抢,按勾选顺序优先)</label>
+      <div class="catrow">
+        <label class="tog" style="margin:0"><input type="checkbox" class="catChk" value="1" checked> 洗衣机(1)</label>
+        <label class="tog" style="margin:0"><input type="checkbox" class="catChk" value="2"> 大件洗(2)</label>
+        <label class="tog" style="margin:0"><input type="checkbox" class="catChk" value="3"> 洗鞋机(3)</label>
+        <label class="tog" style="margin:0"><input type="checkbox" class="catChk" value="4"> 烘干机(4)</label>
+      </div>
+      <div class="hint">已抓包确认:1=洗衣机、2=大件洗、3=洗鞋机、4=烘干机。channel=3、标准模式=GENERAL。</div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn" onclick="saveConfig()">💾 保存配置</button>
+        <button class="btn gray" onclick="testConn()">🔌 测试连接</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🚀 抢机器 <small>任意目标机释放即抢,抢到即停</small></h2>
+      <label>指定机器号(选填,逗号分隔,如 1,3,5 —— 只抢这几台;留空 = 除排除外全抢)</label>
+      <input id="include" placeholder="例:1,3,5">
+      <label>排除的机器号(选填,逗号分隔,如 4,7 —— 坏机器/太远的不抢)</label>
+      <input id="exclude" placeholder="例:4,7">
+      <div class="stats" style="margin-top:14px">
+        <div class="stat"><b id="stPolls">0</b><span>轮询次数</span></div>
+        <div class="stat"><b id="stTries">0</b><span>下单次数</span></div>
+        <div class="stat"><b id="stElapsed">0s</b><span>已运行</span></div>
+        <div class="stat"><b id="stAvail">-</b><span>当前可用</span></div>
+      </div>
+      <div class="row">
+        <button class="btn green" id="btnStart" onclick="startGrab()">▶ 开始抢</button>
+        <button class="btn red" id="btnStop" onclick="stopGrab()" disabled>⏹ 停止</button>
+      </div>
+      <div class="hint">流程:填好配置 → 点「开始抢」→ 挂着就行。抢到后<b style="color:var(--warn)">立刻去小程序付款</b>,超时可能被释放。token 失效会自动停下并提示你重新抓包。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="flex">
+      <h2 style="margin:0">🧺 机器状态</h2>
+      <div class="flex" style="margin:0;gap:14px">
+        <label class="tog" style="margin:0"><input type="checkbox" id="autoRefresh" checked> 自动刷新(10s)</label>
+        <button class="btn sm gray" onclick="refreshWashers()">↻ 刷新</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>类型</th><th>机器</th><th>状态</th><th>剩余(分钟)</th><th>机型</th><th>washId</th></tr></thead>
+      <tbody id="washerRows"><tr><td colspan="6" class="empty">点「测试连接」或「刷新」加载数据</td></tr></tbody>
+    </table>
+    <div class="hint" id="tsHint"></div>
+  </div>
+
+  <div class="card">
+    <h2>📜 运行日志</h2>
+    <div id="log"><div class="empty">暂无日志</div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const CAT_NAMES={1:'洗衣机',2:'大件洗',3:'洗鞋机',4:'烘干机'};
+let running=false, statusTimer=null, lastWashers=null, lastTs=0;
+
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2600);}
+async function api(path,opts){const r=await fetch(path,opts);const j=await r.json().catch(()=>({success:false,msg:'响应解析失败'}));if(!j.success)throw new Error(j.msg||'请求失败');return j;}
+
+function collectCategories(){
+  return Array.from(document.querySelectorAll('.catChk:checked')).map(cb=>Number(cb.value));
+}
+async function loadConfig(){
+  try{const j=await api('/api/config');const c=j.data;
+    for(const k of['api_host','token','bucket_number','channel','wash_type_code'])if(c[k]!=null)$(k).value=c[k];
+    const cats=(Array.isArray(c.categories)?c.categories:[1]).map(Number);
+    document.querySelectorAll('.catChk').forEach(cb=>cb.checked=cats.includes(Number(cb.value)));
+  }catch(e){toast('读取配置失败:'+e.message);}
+}
+async function saveConfig(){
+  try{
+    const body={};for(const k of['api_host','token','bucket_number','channel','wash_type_code'])body[k]=$(k).value.trim();
+    body.categories=collectCategories();
+    if(!body.categories.length)return toast('至少勾选一种机器类型');
+    await api('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    toast('✅ 配置已保存');
+  }catch(e){toast('保存失败:'+e.message);}
+}
+
+function catName(w){return CAT_NAMES[w.category]||('类型'+(w.category??'?'));}
+let successNotified=false, titleTimer=null;
+function beepAlarm(){
+  try{
+    const ctx=beepAlarm._ctx||(beepAlarm._ctx=new (window.AudioContext||window.webkitAudioContext)());
+    if(ctx.state==='suspended')ctx.resume();
+    let t=ctx.currentTime;
+    for(let i=0;i<8;i++){
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=i%2?2400:1800;
+      g.gain.setValueAtTime(0.35,t);
+      g.gain.exponentialRampToValueAtTime(0.01,t+0.22);
+      o.start(t);o.stop(t+0.25);t+=0.3;
+    }
+  }catch(e){}
+}
+function flashTitle(){
+  const base='浣熊先抢 · 控制台';let on=true;clearInterval(titleTimer);
+  titleTimer=setInterval(()=>{document.title=(on=!on)?'🎉🎉🎉 抢到了!!快去付款!':base;},600);
+  setTimeout(()=>{clearInterval(titleTimer);document.title=base;},120000);
+}
+function deskNotify(name){
+  try{if('Notification' in window&&Notification.permission==='granted')
+    new Notification('🎉 浣熊先抢:抢到了!',{body:name+' 已下单,快去小程序付款!'});}catch(e){}
+}
+function badge(w){
+  if(w.fault)return'<span class="badge maint">故障</span>';
+  if(w.available)return'<span class="badge ok">可用 · 立即可抢</span>';
+  const map={'洗涤中':'wash','漂洗中':'rinse','维护中':'maint'};
+  return `<span class="badge ${map[w.stateName]||''}">${w.stateName||'未知'}</span>`;
+}
+function remainText(w,ts){
+  if(w.remainTime<=0)return w.available?'0':'-';
+  const passed=Math.floor((Date.now()-ts)/60000);
+  return Math.max(0,w.remainTime-passed);
+}
+function renderWashers(list,ts){
+  lastWashers=list;lastTs=ts;
+  const rows=[...list].sort((a,b)=>(b.available-a.available)||((a.remainTime||99)-(b.remainTime||99)));
+  $('washerRows').innerHTML=rows.length?rows.map(w=>`<tr>
+    <td><span class="badge cat">${catName(w)}</span></td>
+    <td><b>${w.name}</b></td><td>${badge(w)}</td><td>${remainText(w,ts)}</td>
+    <td>${w.config||'-'}</td><td style="color:var(--muted)">${w.washId}</td></tr>`).join('')
+    :'<tr><td colspan="6" class="empty">没有数据</td></tr>';
+  $('tsHint').textContent=list.length?`数据时间 ${new Date(ts).toLocaleTimeString()} · 共 ${list.length} 台,其中可用 ${list.filter(w=>w.available).length} 台`:'';
+}
+async function refreshWashers(){
+  try{
+    const j=await api('/api/washers',{method:'POST'});
+    renderWashers(j.data.washers,j.data.washersTs*1000);
+    toast('✅ 已刷新,token 有效');
+  }catch(e){
+    toast('❌ '+e.message);
+    $('washerRows').innerHTML=`<tr><td colspan="6" class="empty">${e.message}</td></tr>`;
+  }
+}
+async function testConn(){
+  if(!$('token').value.trim()||!$('bucket_number').value.trim())return toast('请先填写 token 和桶编号');
+  await saveConfig();await refreshWashers();
+}
+
+function setPill(st,text){
+  const p=$('statePill');p.textContent=text;p.className='pill';
+  if(st==='watching')p.classList.add('watch');
+  else if(st==='grabbing')p.classList.add('grab');
+  else if(st==='success')p.classList.add('ok');
+  else if(st==='error')p.classList.add('err');
+}
+function renderStatus(d){
+  setPill(d.state,d.stateText);
+  $('stPolls').textContent=d.stats.polls;
+  $('stTries').textContent=d.stats.attempts;
+  $('stElapsed').textContent=(d.stats.elapsed||0)+'s';
+  $('stAvail').textContent=d.washers.length?d.washers.filter(w=>w.available).length:'-';
+  if(d.washers.length)renderWashers(d.washers,d.washersTs*1000);
+  const ok=$('okBanner'),err=$('errBanner');
+  if(d.state==='success'&&d.result){
+    ok.innerHTML=`🎉 抢到 ${d.result.washer.name}!(${d.result.at})<small>立刻打开浣熊先生小程序完成付款,超时可能被释放!订单信息:${JSON.stringify(d.result.order)}</small>`;
+    ok.className='banner ok';
+    if(!successNotified){successNotified=true;beepAlarm();flashTitle();deskNotify(d.result.washer.name);}
+  }else if(d.state==='error'&&d.error){
+    err.textContent='🛑 '+d.error;err.className='banner err';
+  }else{ok.className='banner';err.className='banner';}
+  const lg=$('log');
+  if(d.logs.length)lg.innerHTML=d.logs.map(l=>`<div><span style="color:#5a6072">[${l.t}]</span> ${l.msg}</div>`).join('');
+  lg.scrollTop=lg.scrollHeight;
+  const isRun=d.running;
+  if(isRun!==running){running=isRun;$('btnStart').disabled=isRun;$('btnStop').disabled=!isRun;
+    if(!isRun){clearInterval(statusTimer);statusTimer=null;if(d.state==='stopped')setPill('idle','已停止');}}
+}
+async function pollStatus(){try{const j=await api('/api/grab/status');renderStatus(j.data);}catch(e){}}
+async function startGrab(){
+  await saveConfig();
+  successNotified=false;
+  try{if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();}catch(e){}
+  const nums=s=>$(''+s).value.split(',').map(x=>parseInt(x.trim())).filter(n=>!isNaN(n));
+  try{
+    const j=await api('/api/grab/start',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({include:nums('include'),exclude:nums('exclude')})});
+    toast('🚀 已开始监控');
+    if(!statusTimer)statusTimer=setInterval(pollStatus,1000);
+    pollStatus();
+  }catch(e){toast('启动失败:'+e.message);}
+}
+async function stopGrab(){try{await api('/api/grab/stop',{method:'POST'});toast('已停止');}catch(e){toast(e.message);}}
+
+setInterval(()=>{if(!running&&$('autoRefresh').checked&&lastWashers)refreshWashers();},10000);
+loadConfig();pollStatus();
+</script>
+</body>
+</html>

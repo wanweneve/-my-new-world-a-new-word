@@ -1,0 +1,8 @@
+{
+  "api_host": "https://hxxs.mrrac.com",
+  "token": "<抓包获取:请求头里的 token,原样粘贴,不要解码>",
+  "bucket_number": "<你的洗衣桶编号,小程序「我的洗衣桶」里查看>",
+  "channel": 3,
+  "wash_type_code": "GENERAL",
+  "categories": [1]
+}
