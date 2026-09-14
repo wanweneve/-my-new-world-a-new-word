@@ -1,0 +1,67 @@
+{
+  "name": "skland-kit",
+  "type": "module",
+  "version": "0.3.5",
+  "description": "A client for Skland, a game by Hypergryph.",
+  "author": "enpitsulin<enpitsulin@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/AEtherside/skland-kit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AEtherside/skland-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AEtherside/skland-kit/issues"
+  },
+  "keywords": [
+    "skland",
+    "hypergryph",
+    "game",
+    "client",
+    "api"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "dependencies": {
+    "date-fns": "^4.2.1",
+    "defu": "^6.1.7",
+    "mima-kit": "^0.1.2",
+    "ofetch": "^1.5.1",
+    "unctx": "^2.5.0",
+    "unstorage": "^1.17.5"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^9.0.0",
+    "@types/node": "^25.9.0",
+    "bumpp": "^11.1.0",
+    "eslint": "^10.4.0",
+    "tsdown": "^0.22.0",
+    "tsx": "^4.22.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.6"
+  },
+  "scripts": {
+    "lint": "eslint --cache .",
+    "lint:fix": "pnpm run lint --fix",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --cache --write .",
+    "release": "bumpp && pnpm publish"
+  }
+}

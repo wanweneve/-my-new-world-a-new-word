@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">明日方舟体力卡</string>
+    <string name="widget_label">体力卡 · 明日方舟</string>
+    <string name="widget_desc">实时显示博士剩余理智与回满时间</string>
+
+    <string name="not_bound">尚未绑定账号。请登录或粘贴凭证。</string>
+    <string name="syncing">正在同步…</string>
+    <string name="sync_ok">上次同步：%1$s（剩余理智 %2$d，%3$s）</string>
+    <string name="sync_fail">同步失败：%1$s</string>
+    <string name="bind_btn">登录并绑定</string>
+    <string name="send_code_btn">获取验证码</string>
+    <string name="phone_hint">鹰角账号手机号</string>
+    <string name="code_hint">短信验证码</string>
+    <string name="password_hint">登录密码（鹰角账号）</string>
+    <string name="pwd_bind_btn">密码登录并绑定</string>
+    <string name="paste_hint">或粘贴鹰角 token / 网页登录态 JSON（data.content）</string>
+    <string name="use_cred_btn">使用此凭证</string>
+    <string name="refresh_btn">立即刷新体力</string>
+    <string name="unbind_btn">解绑</string>
+    <string name="status_title">绑定状态</string>
+    <string name="open_widget_tip">绑定成功后：长按桌面 → 窗口小工具/卡片 → 找到「体力卡」添加到桌面（选 2×2 大小）。</string>
+    <string name="disclaimer">仅查询展示，不修改任何游戏数据。凭证仅加密保存在本机。非官方应用，使用风险自负；请勿把凭证泄露给他人。</string>
+</resources>

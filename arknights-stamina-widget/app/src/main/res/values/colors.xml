@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_bg">#E6212A2E</color>
+    <color name="widget_text">#FFFFFFFF</color>
+    <color name="widget_text_sub">#B3FFFFFF</color>
+    <color name="widget_accent">#FFFFC53D</color>
+    <color name="progress_bg">#33FFFFFF</color>
+    <color name="progress_fg">#FFFFC53D</color>
+    <color name="launcher_bg">#00224B</color>
+</resources>

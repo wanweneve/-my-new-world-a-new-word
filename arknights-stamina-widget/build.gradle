@@ -1,0 +1,4 @@
+// 根构建脚本：仅声明 AGP 插件版本，不在此应用
+plugins {
+    id 'com.android.application' version '8.13.2' apply false
+}
